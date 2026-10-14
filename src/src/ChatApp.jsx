@@ -9,6 +9,8 @@ import GroupChat from './GroupChat';
 import TabNavigation from './TabNavigation';
 import FriendsList from './FriendsList';
 import Collab from './Collab';
+import OT from './OperationalTransformation';
+import findDiff from './FindDiff';
 
 export default function ChatApp() {
   const [username, setUsername] = useState('');
@@ -180,21 +182,24 @@ export default function ChatApp() {
     content:"",
     version:0,
   });  
+  const ot=useRef({version:0,inflight:null,local:'',sentText:''})
   const [onlineUsers,setOnlineUsers]=useState(null)
     useEffect(() => {
       if(!joinedRoom) return;
 
       if (stompClient && stompClient.connected) {
       GroupSubRef.current=stompClient.subscribe(`/topic/group/${joinedRoom}`, (message) => {
-        // console.log('Received group message:', message);
         const received = JSON.parse(message.body);
-        // console.log('checking document data ', received);
-        // console.log('Received group message1:', received.type);
         if(received.type==='PROJECT' || received.type==='PASS'){
           console.log('checking document data 55', received);
           if(received.username!==username){
+            const p=received.payload;
+            const splice=(text)=>text.slice(0,p.start)+p.newText+text.slice(p.start+p.delete_count)
+            ot.current.version=p.version;
+            ot.current.sentText=splice(ot.current.sentText??"");
+            ot.current.local=splice(ot.current.local??"");
             return setDocs(prev=>({...prev,
-              content:prev.content.slice(0,received.payload.start)+received.payload.newText+prev.content.slice(received.payload.start+received.payload.delete_count),
+              content:splice(prev.content),
               type:received.type,
               username:received.username,
               roomId:received.roomId,
@@ -202,9 +207,11 @@ export default function ChatApp() {
             }))
           }
           else{
-            return setDocs(prev=>({...prev,version1:received.payload.version}))
+            ot.current.version=received.payload.version;
+            ot.current.inflight=null;
+            flush();
+            return setDocs(prev=>({...prev,version:received.payload.version}))
           }
-          // console.log('checking document data2 ', docs);
         }
         if(received.type=='CHAT'){
           setGroupMessages(prev => [...prev, {
@@ -314,14 +321,39 @@ export default function ChatApp() {
 }
   };
 
+  const sendlocal=(currenttext)=>{
+      ot.current.local=currenttext;
+      setDocs(prev=>({...prev,
+            content:currenttext,
+            type:'PASS',       
+            username:username,
+            roomId:joinedRoom,
+        }));
+      if(ot.current.inflight===null){
+        flush();
+      }
+    }
+    const flush=()=>{   
+      const diff=findDiff(ot.current.sentText??"",ot.current.local??"");
+      if(diff.newText===""&&diff.delete_count===0){
+        return;
+      }
+      sendGroupMessage({
+            type:'PASS',
+            version:ot.current.version,  
+            changed_text1:diff.newText,
+            deletecount:diff.delete_count,
+            start:diff.start,
+        })
+      ot.current.inflight=diff;
+      ot.current.sentText=ot.current.local;
+      }
 
   const sendGroupMessage = (Data) => {
     if(Data.type=='CHAT'&&!Data.content.trim()){
       alert('Please enter a message');
       return;
-    }
-    // console.log("Sending group message:", groupMessage, "to room:", joinedRoom);
-
+    }    
     if (stompClient && stompClient.connected && joinedRoom) {
       let messageObj = {};
       if(Data.type=='PASS'){
@@ -347,6 +379,7 @@ export default function ChatApp() {
         },
       };
     }
+    console.log("sending group message======> ",messageObj)
       // console.log('Sending group message:', messageObj);
           stompClient.publish({
         destination: `/chat/message/${joinedRoom}`,
@@ -449,6 +482,7 @@ export default function ChatApp() {
           setOnlineUsers={setOnlineUsers}
           onlineUsers={onlineUsers}
           sendCaret={sendCaret}
+          sendlocal={sendlocal}
         />
     }
   }

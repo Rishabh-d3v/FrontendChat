@@ -1,9 +1,29 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import './Collab.css'
+import findDiff from "./FindDiff"
+
+// A small curated palette (not neon/rainbow) — each user gets a stable
+// color derived from their username so it never jumps around between renders.
+const USER_COLORS = ["#c9a227", "#4c7fd6", "#d66b6b", "#6bb88a", "#a979d6", "#4bc0c0"]
+function getUserColor(name) {
+    if (!name) return USER_COLORS[0]
+    let hash = 0
+    for (let i = 0; i < name.length; i++) {
+        hash = (hash << 5) - hash + name.charCodeAt(i)
+        hash |= 0
+    }
+    return USER_COLORS[Math.abs(hash) % USER_COLORS.length]
+}
+function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 
 export default function Collab({roomId,username,
     setRoomId,joinRoom,joinedRoom,leaveRoom,
-    messagesEndRef,sendGroupMessage,handleKeyPress,docs,setDocs,setOnlineUsers,onlineUsers,sendCaret
+    messagesEndRef,sendGroupMessage,handleKeyPress,docs,setDocs,setOnlineUsers,onlineUsers,sendCaret,sendlocal
 }){
     const [project,setProject]=useState("");
     const [name,setName]=useState(null);
@@ -17,83 +37,49 @@ export default function Collab({roomId,username,
 
     useLayoutEffect(()=>{
         const newCaret={}
-        // console.log("marker ref ",markerRef)
         Object.entries(markerRef.current).forEach(([name,mref])=>{
         const rect=mref?.getBoundingClientRect()
         const contRect=containerRef.current?.closest('.editor-container')?.getBoundingClientRect()
-        // console.log("rect ",rect??"null")
         newCaret[name]=({
             x:rect&&contRect ? rect.left-contRect.left:0,
             y:rect&&contRect ? rect.top-contRect.top:0
         })
     })
-    // console.log("newcaret ",newCaret)
     setremoteCaret(newCaret)
-        
     },[onlineUsers])
-    textarearef.current?.setSelectionRange(caretPos1.current,caretPos2.current)
+    textarearef.current?.setSelectionRange(caretPos1.current,caretPos2.current)        
+    // const send=()=>{
+        // caretPos1.current=textarearef.current.selectionStart;
+        // caretPos2.current=textarearef.current.selectionEnd;
+        // const textarea=findDiff(docs?.content??"" ,latesttext.current); 
+        // if(textarea.newText===""&&textarea.delete_count===0){
+        //     return;
+        // }
+        // setDocs(prev=>({...prev,
+        //     content:prev.content.slice(0,textarea.start)+textarea.newText+prev.content.slice(textarea.start+textarea.delete_count),
+        //     type:'PASS',       
+        //     username:username,
+        //     roomId:joinedRoom,
+        // }));
+        // console.log("document version ====> ",docs)
+        // sendGroupMessage({
+        //     type:'PASS',
+        //     version:docs?.version??0,  
+        //     changed_text1:textarea.newText,
+        //     deletecount:textarea.delete_count,
+        //     start:textarea.start,
+        // })
+    // }
+    // const latesttext=useRef("")
     const handleProject=(e)=>{
-        // console.log("e.target.selectionStart ",textarearef.current.selectionStart)
-        // console.log("callign handle project method ",docs )
         caretPos1.current=textarearef.current.selectionStart;
         caretPos2.current=textarearef.current.selectionEnd;
-        // console.log("checking caret pos in handle project ",caretPos1.current,caretPos2.current)
-        // const oldPosition=docs?.PosStart
-        // console.log("callign handle project method22 ",docs )
-        console.log("checking caret pos in handle project ",caretPos1.current,caretPos2.current)
-        const textarea=checkTextChange(docs?.content??"" ,e.target.value); 
-        setDocs(prev=>({...prev,
-            content:prev.content.slice(0,textarea.start)+textarea.newText+prev.content.slice(textarea.start+textarea.delete_count),
-            type:'PASS',           
-            // oldPosStart:oldPosition,
-            // caret:{
-            // PosStart:caretPos1.current,
-            //     PosEnd:caretPos2.current,
-            // },
-            username:username,
-            roomId:joinedRoom,
-        }));
-        
-        console.log("textarea ",textarea)
-        sendGroupMessage({
-            type:'PASS',
-            // PosStart:caretPos1.current,
-            // PosEnd:caretPos2.current,
-            version:docs?.version,  
-            // oldPos:oldPosition,
-            changed_text1:textarea.newText,
-            deletecount:textarea.delete_count,
-            start:textarea.start,
-            version:docs?.version,
-        })
-        // console.log("old caret position  ", caretPos1.current, caretPos2.current)
-        // console.log("setdocs ", docs??"null")
-    }
-    function checkTextChange(oldText,newText1){
-        let start=0;
-        while(start<oldText.length &&start<newText1.length && oldText[start]===newText1[start]){
-            start++;
-        }
-        let oldend=oldText.length-1;
-        let newend=newText1.length-1;
-        while(newend>=start&&oldend>=start&&  oldText[oldend]===newText1[newend]){
-            oldend--;
-            newend--;
-        }
-        let delete_count=oldend-start+1
-        let newText=newText1.substring(start,newend+1)
-        return{
-            newText,
-            start,
-            delete_count,
-        }
+        sendlocal(e.target.value)
     }
 
     const handleCaret=(e)=>{
-        // console.log("calling handle caret method")
         caretPos1.current=textarearef.current.selectionStart;
         caretPos2.current=textarearef.current.selectionEnd;
-        console.log("checking caret pos in handle Caret ",caretPos1.current,caretPos2.current)
         sendCaret({
             PosStart:caretPos1.current,
             PosEnd:caretPos2.current
@@ -101,7 +87,6 @@ export default function Collab({roomId,username,
     }
     const saveFile=async()=>{
         const token=sessionStorage.getItem("jwt")
-        // console.log("json token ",docs)
         const promise=await fetch(`http://localhost:8080/updateDocs`,{
             method:'PUT',
             headers:{
@@ -111,62 +96,60 @@ export default function Collab({roomId,username,
             body:JSON.stringify(docs),
         })
         const message=await promise.json()
-        // console.log(message)
     }
-    // console.log("checking docs log => ",onlineUsers)
-    // console.log("checking docs log2 => ",Array.isArray(onlineUsers))
 
     return (<div className="collab-wrapper">
-        <div className="header">{!joinedRoom?(
-            <div className="input-buttons"><input type="text" placeholder="create a new document"
-            value={roomId}
-            onChange={(e) => setRoomId(e.target.value)}/>
-            <button onClick={joinRoom}>create</button> 
-            <button onClick={joinRoom}>join</button>
-            </div>):(
+        {!joinedRoom?(
+            <div className="entry-screen">
+                <p className="entry-prompt">name a document to create or join it</p>
+                <div className="input-buttons">
+                    <input type="text" placeholder="document name"
+                    value={roomId}
+                    onChange={(e) => setRoomId(e.target.value)}/>
+                    <button onClick={joinRoom}>create</button>
+                    <button onClick={joinRoom}>join</button>
+                </div>
+            </div>
+        ):(
                 <div className="collab-header">
                     <div className="tracking-container"> 
-                        { onlineUsers!=null ?(Object.entries(onlineUsers)?.map(([username,users])=>(
-                            <div className="online-users" key={username}>{users.username}</div>
+                        { onlineUsers!=null ?(Object.entries(onlineUsers)?.map(([key,users])=>(
+                            <div className="online-users" key={key}
+                            style={{'--user-color':getUserColor(users.username)}}>{users.username}</div>
                         ))
                     ):(
-                    <div>no users</div>
+                    <div className="online-users">no users</div>
                     )}</div> 
                     <div className="save-container">
+                        <span className="save-status" title="live"></span>
                         <button className="save-button"onClick={saveFile}>
                             save</button>
                             </div>
                             </div>
                         )}
-                        </div>
                         <div>
                             {joinedRoom&&(
                                 <div  className="editor-container" ref={containerRef}>
                                     <textarea className="editor"
                                     name="textarea" value={docs?.content ??""} id="1" ref={textarearef} onChange={(e)=>{handleProject(e)}}
-                    // onBeforeInput={(e)=>{console.log("======================",e)}}
-                    // onKeyDown={(e)=>{handleCaret(e)}}
-                    // onKeyUp={(e)=>{handleCaret(e)}}
-                    // onClick={(e)=>{handleCaret(e)}}
                                     onSelect={(e)=>{handleCaret(e)}}>
     
                                     </textarea>
                                     {Object.entries(onlineUsers??[]).map(([onlineuser,users])=>{
+                                        const userColor=getUserColor(users?.username??onlineuser)
                                         return  <div key={onlineuser}>
-                            {/* <div className="mirror">{(docs?.content??"").slice(0,users?.caret?.PosStart??0)}<span className="rect" 
-                            ref={el=>{markerRef.current[onlineuser]=el}}id="caret">
-                                    </span>{(docs?.content??"").slice(users?.caret?.PosStart??0)}
-                                </div> */}
                                 <div className="selection-area">
                                     {(docs?.content??"").slice(0,users?.caret?.PosStart??0)}
-                                    <span className="selection-rect" ref={el=>{markerRef.current[onlineuser]=el}}>
+                                    <span className="selection-rect" ref={el=>{markerRef.current[onlineuser]=el}}
+                                    style={{'--user-color-soft':hexToRgba(userColor,0.28)}}>
                                         {(docs?.content??"").slice(users?.caret?.PosStart??0,users?.caret?.PosEnd??0)}
                                         </span>{(docs?.content??"").slice(users?.caret?.PosEnd??0)}
                                         </div>
                                         {onlineuser!==username&&remotecaret[onlineuser]?.x!==0&&remotecaret[onlineuser]?.y!==0&&(
-                                            <div className="caret1" style={{left:`${remotecaret[onlineuser]?.x}px`,top:`${remotecaret[onlineuser]?.y}px`,
-                                            backgroundColor:`hsl(${12},70%,50%)`
-                                        }}>|</div>
+                                            <div className="caret1" data-user={users?.username??onlineuser}
+                                            style={{left:`${remotecaret[onlineuser]?.x}px`,top:`${remotecaret[onlineuser]?.y}px`,
+                                            '--user-color':userColor
+                                        }}></div>
                                     )}
                                     </div>
                                     })
