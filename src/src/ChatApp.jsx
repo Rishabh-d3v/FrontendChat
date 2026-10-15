@@ -9,7 +9,6 @@ import GroupChat from './GroupChat';
 import TabNavigation from './TabNavigation';
 import FriendsList from './FriendsList';
 import Collab from './Collab';
-import OT from './OperationalTransformation';
 import findDiff from './FindDiff';
 
 export default function ChatApp() {
@@ -184,6 +183,7 @@ export default function ChatApp() {
   });  
   const ot=useRef({version:0,inflight:null,local:'',sentText:''})
   const [onlineUsers,setOnlineUsers]=useState(null)
+  const remoteOps=useRef([])
     useEffect(() => {
       if(!joinedRoom) return;
 
@@ -198,6 +198,7 @@ export default function ChatApp() {
             ot.current.version=p.version;
             ot.current.sentText=splice(ot.current.sentText??"");
             ot.current.local=splice(ot.current.local??"");
+            remoteOps.current.push({start:p.start,newText:p.newText,delete_count:p.delete_count,sender:received.username})
             return setDocs(prev=>({...prev,
               content:splice(prev.content),
               type:received.type,
@@ -223,8 +224,8 @@ export default function ChatApp() {
       }  
       else{
         console.log('checking if i can receive caret position ', received);
-        // if(received.username!==username){
-          return setOnlineUsers(received);
+        console.log("onlineUsers == ", received);
+        return setOnlineUsers(received);
           // }
       }
       });
@@ -393,11 +394,11 @@ export default function ChatApp() {
       setGroupMessage('');
     }
   };
-  const sendCaret=(caretPos)=>{
+  const sendCaret=(caretData)=>{
     // console.log("sending caret position via sendCaret ",caretPos)
     stompClient.publish({
       destination: `/chat/caret/${joinedRoom}`,
-      body:JSON.stringify(caretPos),
+      body:JSON.stringify(caretData),
       headers: {
           'message-type': 'caretPos',
           'room': joinedRoom,
@@ -483,6 +484,7 @@ export default function ChatApp() {
           onlineUsers={onlineUsers}
           sendCaret={sendCaret}
           sendlocal={sendlocal}
+          remoteOps={remoteOps}
         />
     }
   }

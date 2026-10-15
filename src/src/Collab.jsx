@@ -23,7 +23,7 @@ function hexToRgba(hex, alpha) {
 
 export default function Collab({roomId,username,
     setRoomId,joinRoom,joinedRoom,leaveRoom,
-    messagesEndRef,sendGroupMessage,handleKeyPress,docs,setDocs,setOnlineUsers,onlineUsers,sendCaret,sendlocal
+    messagesEndRef,sendGroupMessage,handleKeyPress,docs,setDocs,setOnlineUsers,onlineUsers,sendCaret,sendlocal,remoteOps
 }){
     const [project,setProject]=useState("");
     const [name,setName]=useState(null);
@@ -45,41 +45,40 @@ export default function Collab({roomId,username,
             y:rect&&contRect ? rect.top-contRect.top:0
         })
     })
-    setremoteCaret(newCaret)
+    setremoteCaret(newCaret)    
+    console.log("onlineUsers == ", onlineUsers)
     },[onlineUsers])
-    textarearef.current?.setSelectionRange(caretPos1.current,caretPos2.current)        
-    // const send=()=>{
-        // caretPos1.current=textarearef.current.selectionStart;
-        // caretPos2.current=textarearef.current.selectionEnd;
-        // const textarea=findDiff(docs?.content??"" ,latesttext.current); 
-        // if(textarea.newText===""&&textarea.delete_count===0){
-        //     return;
-        // }
-        // setDocs(prev=>({...prev,
-        //     content:prev.content.slice(0,textarea.start)+textarea.newText+prev.content.slice(textarea.start+textarea.delete_count),
-        //     type:'PASS',       
-        //     username:username,
-        //     roomId:joinedRoom,
-        // }));
-        // console.log("document version ====> ",docs)
-        // sendGroupMessage({
-        //     type:'PASS',
-        //     version:docs?.version??0,  
-        //     changed_text1:textarea.newText,
-        //     deletecount:textarea.delete_count,
-        //     start:textarea.start,
-        // })
-    // }
-    // const latesttext=useRef("")
-    const handleProject=(e)=>{
-        caretPos1.current=textarearef.current.selectionStart;
-        caretPos2.current=textarearef.current.selectionEnd;
-        sendlocal(e.target.value)
-    }
-
+    useLayoutEffect(() => {
+        console.log("remoteOps.current starting == ",remoteOps.current)
+        const ops = remoteOps.current.splice(0); 
+        for (const op of ops) {
+        caretPos1.current = shiftCaret(caretPos1.current, op);
+        caretPos2.current = shiftCaret(caretPos2.current, op);
+     }
+        console.log("caretPos1.current == ",caretPos1.current)
+        console.log("caretPos2.current == ",caretPos2.current)
+        textarearef.current?.setSelectionRange(caretPos1.current, caretPos2.current);
+    }, [docs?.content]);
+    const shiftCaret = (currentPos, remoteOp) => {
+        if (currentPos <= remoteOp.start) {
+            console.log("currentPos <= remoteOp.start == ",currentPos,remoteOp.start)
+            return currentPos;
+        }                                        
+        if (currentPos >= remoteOp.start + remoteOp.delete_count) {
+            console.log("currentPos >= remoteOp.start + remoteOp.delete_count == ",currentPos,remoteOp.start,remoteOp.delete_count)
+            return currentPos + remoteOp.newText.length - remoteOp.delete_count;
+        }
+        console.log("returning remoteOp.start + remoteOp.newText.length == ",remoteOp.start,remoteOp.newText.length)    
+        return remoteOp.start + remoteOp.newText.length;                                
+    };
+    const handleProject = (e) => {
+    caretPos1.current = e.target.selectionStart;
+    caretPos2.current = e.target.selectionEnd;
+    sendlocal(e.target.value);
+};
     const handleCaret=(e)=>{
-        caretPos1.current=textarearef.current.selectionStart;
-        caretPos2.current=textarearef.current.selectionEnd;
+    caretPos1.current = e.target.selectionStart;
+    caretPos2.current = e.target.selectionEnd;
         sendCaret({
             PosStart:caretPos1.current,
             PosEnd:caretPos2.current
@@ -158,3 +157,7 @@ export default function Collab({roomId,username,
                                     </div>
                                     </div>)
                                     }
+
+
+
+                            
