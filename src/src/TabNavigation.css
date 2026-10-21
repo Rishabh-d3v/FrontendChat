@@ -1,0 +1,120 @@
+.tabs-container {
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs-container .tabs-wrapper {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.tabs-container .tabs-list {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs-container .tabs-list::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-container .tab-button {
+  position: relative;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  white-space: nowrap;
+  transition: color var(--transition), background var(--transition);
+}
+
+.tabs-container .tab-button::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  transition: background var(--transition);
+}
+
+.tabs-container .tab-button:hover:not(.active) {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.tabs-container .tab-button.active {
+  color: var(--accent);
+}
+
+.tabs-container .tab-button.active::after {
+  background: var(--accent);
+}
+
+.tabs-container .tab-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabs-container .tab-content svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .tabs-container .tabs-wrapper {
+    padding: 0 12px;
+  }
+
+  .tabs-container .tab-button {
+    padding: 11px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Equal-width, icon-over-label tabs on phones */
+@media (max-width: 560px) {
+  .tabs-container .tabs-wrapper {
+    padding: 0 4px;
+  }
+
+  .tabs-container .tabs-list {
+    gap: 0;
+  }
+
+  .tabs-container .tab-button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 4px 9px;
+    font-size: 0.7rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .tabs-container .tab-button::after {
+    left: 20%;
+    right: 20%;
+  }
+
+  .tabs-container .tab-content {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .tabs-container .tab-content svg {
+    width: 19px;
+    height: 19px;
+  }
+}

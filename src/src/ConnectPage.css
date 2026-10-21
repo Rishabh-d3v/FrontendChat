@@ -1,0 +1,136 @@
+/* Connect screen shown after login, before the socket connects */
+
+.login-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--bg);
+}
+
+.login-screen .login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 36px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.login-screen .login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-screen .login-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 50%;
+}
+
+.login-screen .login-icon-wrapper svg {
+  width: 26px;
+  height: 26px;
+}
+
+.login-screen .login-title {
+  margin-bottom: 6px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.login-screen .login-subtitle {
+  font-size: 0.925rem;
+  color: var(--text-muted);
+}
+
+.login-screen .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-screen .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-screen .form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.login-screen .form-input {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.login-screen .form-input:read-only {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.login-screen .form-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+.login-screen .btn-connect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), transform 0.1s ease;
+}
+
+.login-screen .btn-connect svg {
+  width: 18px;
+  height: 18px;
+}
+
+.login-screen .btn-connect:hover {
+  background: var(--accent-hover);
+}
+
+.login-screen .btn-connect:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 480px) {
+  .login-screen .login-card {
+    padding: 28px 20px;
+  }
+
+  .login-screen .login-title {
+    font-size: 1.4rem;
+  }
+}

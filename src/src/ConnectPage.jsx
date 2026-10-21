@@ -1,9 +1,12 @@
 
+import { MessageCircle, User } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
+import './ConnectPage.css'
+
 export default function ConnectPage({username,connect}){
-const MessageCircle = () => <span>💬</span>;
-const User = () => <span>👤</span>;
     return(<>
     <div className="login-screen">
+        <ThemeToggle className="theme-toggle-floating" />
         <div className="login-card">
           <div className="login-header">
             <div className="login-icon-wrapper">

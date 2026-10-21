@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./FriendsList.css";
 import MessageImage from "./MessageImage";
+import { ArrowLeft, Paperclip, Send } from "lucide-react";
 export default function FriendsList({
   userchat,
   username,
@@ -164,7 +165,7 @@ const postFiles=async(e)=>{
         <div className="chat-area">
           {/* Chat Header with back button */}
           <div className="chat-header" onClick={() => setSelectedFriendName(null)}>
-            <span className="back-arrow">&#8592;</span>
+            <span className="back-arrow"><ArrowLeft /></span>
             {selectedFriendName}
           </div>
 
@@ -244,7 +245,7 @@ const postFiles=async(e)=>{
                 onChange={postFiles}
               />
               <label htmlFor="file-input" className="attachment-button">
-                📎
+                <Paperclip />
               </label>
               <button
                 onClick={handleSendMessage}
@@ -253,7 +254,7 @@ const postFiles=async(e)=>{
                 }`}
                 disabled={!messageText.trim() && !files}
               >
-                ➤
+                <Send />
               </button>
             </div>
           </div>

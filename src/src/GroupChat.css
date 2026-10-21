@@ -1,0 +1,110 @@
+/* Room join / room info bar for GroupChat */
+
+.chat-box .room-join-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-box .room-join-wrapper input {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-box .btn-join {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), transform 0.1s ease;
+}
+
+.chat-box .btn-join:hover {
+  background: var(--accent-hover);
+}
+
+.chat-box .btn-join:active {
+  transform: translateY(1px);
+}
+
+.chat-box .room-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chat-box .room-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.chat-box .room-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 50%;
+}
+
+.chat-box .room-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-box .room-info-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chat-box .room-name {
+  font-size: 0.975rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-box .room-type {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+
+.chat-box .btn-leave {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--danger);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.chat-box .btn-leave:hover {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+@media (max-width: 480px) {
+  .chat-box .room-join-wrapper {
+    flex-direction: column;
+  }
+
+  .chat-box .btn-join {
+    width: 100%;
+  }
+}

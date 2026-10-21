@@ -1,11 +1,10 @@
-import { UserCircle, UserCog2Icon, UsersIcon } from "lucide-react";
+import { FileText, MessageCircle, UserCircle, Users } from "lucide-react";
+import "./TabNavigation.css";
 
 export default function TabNavigation({
     setActiveTab,activeTab
 }){
 
-const Users = () => <span>👥</span>;
-const MessageCircle = () => <span>💬</span>;
     return(<>
     <div className="tabs-container">
         <div className="tabs-wrapper">
@@ -44,7 +43,7 @@ const MessageCircle = () => <span>💬</span>;
               className={`tab-button ${activeTab === 'collab' ? 'active' : ''}`}
             >
               <div className="tab-content">
-                <Users />
+                <FileText />
                 Collab & Chat
               </div>
             </button>

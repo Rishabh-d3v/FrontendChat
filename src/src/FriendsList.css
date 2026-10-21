@@ -1,465 +1,362 @@
-/* RESET & BASE */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* FriendsList — every selector is scoped under .friends-container so
+   these shared class names (.chat-header, .messages-container, …) don't
+   leak into the app header or the Private/Group chat panels. */
 
 .friends-container {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  height: 70vh;
   width: 100%;
-  background: #373232;
   position: relative;
   overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-/* DESKTOP LAYOUT */
+/* ---------- Sidebar ---------- */
 
-.friends-sidebar {
+.friends-container .friends-sidebar {
   width: 320px;
-  background: white;
-  border-right: 1px solid #e0e0e0;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
 }
 
-/* BETTER SIDEBAR HEADER */
-.sidebar-header {
-  padding: 20px;
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 1px solid #e0e0e0;
-  background: #fafafa;
+.friends-container .sidebar-header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-/* BETTER FRIEND ITEMS */
-.friend-item {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f5f5f5;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: white;
-  position: relative;
-}
-
-.friend-item:hover {
-  background: #f8f9fa;
-}
-
-.friend-item.active {
-  background: #e8f4fd;
-  border-left: 3px solid #2196f3;
-  padding-left: 17px;
-}
-
-.friend-item.active::after {
-  content: '';
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  background: #2196f3;
-  border-radius: 50%;
-}
-
-.friend-name {
+  z-index: 2;
+  padding: 16px 18px;
+  font-size: 0.8rem;
   font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 5px;
-  color: #212121;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.friends-container .friend-item {
+  position: relative;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.friends-container .friend-item:hover {
+  background: var(--surface-2);
+}
+
+.friends-container .friend-item.active {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+
+.friends-container .friend-name {
+  margin-bottom: 3px;
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.friend-last-message {
-  font-size: 13px;
-  color: #757575;
+.friends-container .friend-last-message {
+  font-size: 0.8rem;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 90%;
 }
 
-/* Scrollbar styling for sidebar */
-.friends-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.friends-sidebar::-webkit-scrollbar-track {
-  background: #f5f5f5;
-}
-
-.friends-sidebar::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.friends-sidebar::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
-}
-
-/* CHAT AREA (unchanged) */
-
-.chat-area {
+/* Placeholder pane when no conversation is open (sidebar is the only child) */
+.friends-container:has(> .friends-sidebar:last-child)::after {
+  content: 'Select a conversation to start chatting';
   flex: 1;
   display: flex;
-  flex-direction: column;
-  background: #fafafa;
-  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-size: 0.925rem;
+  color: var(--text-faint);
+  background: var(--surface-2);
 }
 
-.chat-header {
-  padding: 20px;
-  font-size: 17px;
-  font-weight: 600;
-  border-bottom: 1px solid #e0e0e0;
-  background: white;
-  color: #212121;
-}
+/* ---------- Conversation ---------- */
 
-.back-arrow {
-  display: inline-block;  
-  font-size: 20px;
-  color: #2196f3;
-  cursor: pointer;
-  margin-right: 8px;
-}
-
-@media (min-width: 769px) {
-  .back-arrow {
-    display: none; 
-  }
-}
-
-.messages-container {
+.friends-container .chat-area {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-2);
+}
+
+.friends-container .chat-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  font-size: 0.975rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.friends-container .back-arrow {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: -6px;
+  color: var(--accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.friends-container .back-arrow:hover {
+  background: var(--accent-soft);
+}
+
+.friends-container .back-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.friends-container .messages-container {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.messages-container::-webkit-scrollbar {
-  width: 6px;
+.friends-container .loading-top {
+  align-self: center;
+  padding: 4px 12px;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
 }
 
-.messages-container::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.message-row {
+.friends-container .message-row {
   display: flex;
-  margin-bottom: 4px;
 }
 
-.message-row.sent {
+.friends-container .message-row.sent {
   justify-content: flex-end;
 }
 
-.message-row.received {
+.friends-container .message-row.received {
   justify-content: flex-start;
 }
 
-.message-bubble {
-  max-width: 65%;
-  padding: 10px 14px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.4;
-  word-wrap: break-word;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+.friends-container .message-bubble {
+  max-width: min(65%, 32rem);
+  padding: 9px 13px;
+  font-size: 0.925rem;
+  line-height: 1.45;
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+  box-shadow: var(--shadow-sm);
 }
 
-.message-bubble.sent {
-  background: #2196f3;
-  color: white;
+.friends-container .message-bubble.sent {
+  color: var(--bubble-sent-text);
+  background: var(--bubble-sent);
   border-bottom-right-radius: 4px;
 }
 
-.message-bubble.received {
-  background: white;
-  color: #212121;
+.friends-container .message-bubble.received {
+  color: var(--bubble-received-text);
+  background: var(--bubble-received);
+  border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
 }
 
-.message-input-wrapper {
-  padding: 16px 20px;
-  background: white;
-  border-top: 1px solid #e0e0e0;
-}
-
-.input-inner {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 10px 16px;
-  background: #f5f5f5;
-  border-radius: 24px;
-}
-
-.message-input {
+.friends-container .empty-state {
   flex: 1;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 14px;
-  color: #212121;
-}
-
-.message-input::placeholder {
-  color: #9e9e9e;
-}
-
-.send-button {
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  color: white;
+  padding: 24px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-faint);
+}
+
+/* ---------- Composer ---------- */
+
+.friends-container .message-input-wrapper {
   flex-shrink: 0;
+  padding: 12px 18px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
-.send-button.enabled {
-  background: #2196f3;
+.friends-container .input-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 5px 5px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.send-button.enabled:hover {
-  background: #1976d2;
+.friends-container .input-inner:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
 }
 
-.send-button.disabled {
-  background: #ccc;
+.friends-container .message-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
+  font-size: 0.925rem;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.friends-container .message-input:focus-visible {
+  box-shadow: none;
+}
+
+.friends-container .message-input::placeholder {
+  color: var(--text-faint);
+}
+
+.friends-container .attachment-button,
+.friends-container .send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  transition: background var(--transition), color var(--transition);
+}
+
+.friends-container .attachment-button svg,
+.friends-container .send-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.friends-container .attachment-button {
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.friends-container .attachment-button:hover {
+  color: var(--text);
+  background: var(--surface-3);
+}
+
+.friends-container .send-button.enabled {
+  color: var(--accent-contrast);
+  background: var(--accent);
+}
+
+.friends-container .send-button.enabled:hover {
+  background: var(--accent-hover);
+}
+
+.friends-container .send-button.disabled {
+  color: var(--text-faint);
+  background: var(--surface-3);
   cursor: not-allowed;
 }
 
-.empty-state {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 12px;
-  color: #9e9e9e;
-}
-
-/* TABLET */
+/* ---------- Tablet ---------- */
 
 @media (max-width: 1024px) {
-  .friends-sidebar {
-    width: 280px;
+  .friends-container .friends-sidebar {
+    width: 270px;
   }
 }
 
-/* MOBILE - FRIENDLIST IMPROVEMENTS */
+/* ---------- Mobile: list and conversation become separate screens ---------- */
 
 @media (max-width: 768px) {
   .friends-container {
     display: block;
+    border-radius: var(--radius-md);
   }
 
-  .friends-sidebar.mobile-hidden {
+  .friends-container:has(> .friends-sidebar:last-child)::after {
     display: none;
   }
 
-  .friends-sidebar {
+  .friends-container .friends-sidebar {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     border-right: none;
   }
 
-  .sidebar-header {
-    padding: 16px;
-    font-size: 17px;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  .friends-container .friends-sidebar.mobile-hidden {
+    display: none;
   }
 
-  .friend-item {
-    padding: 14px 16px;
-  }
-
-  .friend-item.active {
-    background: #e8f4fd;
-    border-left: 3px solid #2196f3;
-    padding-left: 13px;
-  }
-
-  .friend-item.active::after {
-    right: 12px;
-  }
-
-  .friend-name {
-    font-size: 14px;
-  }
-
-  .friend-last-message {
-    font-size: 12px;
-  }
-
-  .chat-area {
+  .friends-container .chat-area {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
+    inset: 0;
     z-index: 100;
-    background: #fafafa;
+    height: 100vh;
+    height: 100dvh;
   }
 
-  .chat-header {
-    padding: 14px 16px;
-    font-size: 16px;
+  .friends-container .chat-header {
+    padding: 10px 14px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    cursor: pointer;
   }
 
-  .messages-container {
+  .friends-container .back-arrow {
+    display: inline-flex;
+  }
+
+  .friends-container .messages-container {
     padding: 12px;
   }
 
-  .message-bubble {
-    max-width: 75%;
-    font-size: 13px;
-    padding: 9px 12px;
+  .friends-container .message-bubble {
+    max-width: 82%;
   }
 
-  .message-input-wrapper {
-    padding: 12px;
-  }
-
-  .input-inner {
-    padding: 8px 14px;
-  }
-
-  .message-input {
-    font-size: 13px;
-  }
-
-  .send-button {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
+  .friends-container .message-input-wrapper {
+    padding: 10px 12px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
   }
 }
-
-/* SMALL MOBILE */
 
 @media (max-width: 480px) {
-  .sidebar-header {
-    padding: 14px;
-    font-size: 16px;
-  }
-
-  .friend-item {
+  .friends-container .friend-item {
     padding: 12px 14px;
   }
 
-  .friend-item.active {
-    padding-left: 11px;
+  .friends-container .message-bubble {
+    max-width: 88%;
   }
-
-  .friend-name {
-    font-size: 13px;
-  }
-
-  .friend-last-message {
-    font-size: 11px;
-  }
-
-  .chat-header {
-    padding: 12px 14px;
-    font-size: 15px;
-  }
-
-  .messages-container {
-    padding: 10px;
-  }
-
-  .message-bubble {
-    max-width: 80%;
-    font-size: 13px;
-    padding: 8px 12px;
-  }
-
-  .message-input-wrapper {
-    padding: 10px;
-  }
-
-  .send-button {
-    width: 30px;
-    height: 30px;
-  }
-}
-
-.message-media {
-  display: inline-block;
-  max-width: 230px;
-}
-.message-image {
-  max-width: 220px;     /* control size */
-  max-height: 250px;    /* prevent tall images */
-  width: auto;
-  height: auto;
-
-  border-radius: 12px;  /* WhatsApp style */
-  object-fit: cover;    /* crop nicely if needed */
-
-  cursor: pointer;
-}
-.file-media {
-  max-width: 260px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background-color: #f1f3f5;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  word-break: break-word;
-}
-
-/* File link (main box) */
-.file-link {
-  text-decoration: none;
-  color: #1a73e8;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  padding: 8px 10px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-}
-
-.file-link:hover {
-  background: #e9ecef;
-}
-
-/* Download button */
-.file-download-btn {
-  text-decoration: none;
-  font-size: 13px;
-  color: #555;
-  align-self: flex-end;
-  transition: color 0.2s ease;
-}
-
-.file-download-btn:hover {
-  color: #000;
 }

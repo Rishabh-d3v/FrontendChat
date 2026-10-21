@@ -1,11 +1,12 @@
+import { MessageCircle, Send, Users } from "lucide-react";
+import "./ChatPanel.css";
+import "./GroupChat.css";
+
 export default function GroupChat({roomId,username,
     setRoomId,joinRoom,joinedRoom,leaveRoom,groupMessages,
     messagesEndRef,sendGroupMessage,setGroupMessage,groupMessage,handleKeyPress
 }){
 
-const Send = () => <span>📤</span>;
-const Users = () => <span>👥</span>;
-const MessageCircle = () => <span>💬</span>;
 
 const handleSendMessage=()=>{
   // console.log("Sending group message10:", groupMessage);

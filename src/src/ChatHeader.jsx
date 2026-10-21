@@ -1,8 +1,9 @@
 import React from "react"
+import { LogOut, User } from "lucide-react"
+import ThemeToggle from "./ThemeToggle"
+import "./ChatHeader.css"
 
 export default function ChatHeader({username,disconnect}) {
-const User = () => <span>👤</span>;
-const LogOut = () => <span>🚪</span>;
 
     return(<>
         <div className="chat-header">
@@ -17,10 +18,13 @@ const LogOut = () => <span>🚪</span>;
             </div>
           </div>
           
+          <div className="header-actions">
+          <ThemeToggle />
           <button onClick={disconnect} className="btn-disconnect">
             <LogOut />
             Disconnect
           </button>
+          </div>
         </div>
       </div>
         </>)

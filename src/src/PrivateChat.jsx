@@ -1,7 +1,6 @@
 import React, { useRef } from "react"
-
-const MessageCircle = () => <span>💬</span>;
-const Send = () => <span>📤</span>;
+import { MessageCircle, Send } from "lucide-react"
+import "./ChatPanel.css"
 
 export default function PrivateChat({privateMessages,setPrivateMessage,
     privateMessage,sendPrivateMessage,setPrivateRecipient,privateRecipient,

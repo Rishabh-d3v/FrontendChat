@@ -1,0 +1,122 @@
+/* App header — scoped with ">" so the friend-chat header
+   (also .chat-header, inside FriendsList) is unaffected */
+
+.chat-container > .chat-header {
+  flex-shrink: 0;
+  padding: 12px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-container > .chat-header .header-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.chat-container > .chat-header .user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.chat-container > .chat-header .user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 50%;
+}
+
+.chat-container > .chat-header .user-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-container > .chat-header .user-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chat-container > .chat-header .user-name {
+  font-size: 0.975rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-container > .chat-header .user-status {
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: var(--success);
+}
+
+.chat-container > .chat-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.chat-container > .chat-header .btn-disconnect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--danger);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.chat-container > .chat-header .btn-disconnect svg {
+  width: 17px;
+  height: 17px;
+}
+
+.chat-container > .chat-header .btn-disconnect:hover {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+@media (max-width: 768px) {
+  .chat-container > .chat-header {
+    padding: 10px 16px;
+  }
+}
+
+/* Icon-only disconnect on phones; the text stays for screen readers */
+@media (max-width: 480px) {
+  .chat-container > .chat-header {
+    padding: 8px 12px;
+  }
+
+  .chat-container > .chat-header .btn-disconnect {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+    font-size: 0;
+    gap: 0;
+  }
+
+  .chat-container > .chat-header .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+}

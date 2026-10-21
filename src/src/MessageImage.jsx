@@ -1,5 +1,7 @@
 import React from "react";
 import { useState,useEffect } from "react";
+import { Download, FileText } from "lucide-react";
+import "./MessageImage.css";
 
 export default function MessageImage ({filename,token,baseurl,type}){
   const [imageUrl, setImageUrl] = useState(null);
@@ -63,7 +65,7 @@ export default function MessageImage ({filename,token,baseurl,type}){
         download={filename}
         className="image-download-btn"
       >
-        ⬇️ Download
+        <Download /> Download
       </a>
     </div>
   );
@@ -77,7 +79,7 @@ export default function MessageImage ({filename,token,baseurl,type}){
         rel="noopener noreferrer"
         className="file-link"
       >
-        📄 {filename}
+        <FileText /> {filename}
       </a>
       <br />
       <a 
@@ -85,7 +87,7 @@ export default function MessageImage ({filename,token,baseurl,type}){
         download={filename}
         className="file-download-btn"
       >
-        ⬇️ Download
+        <Download /> Download
       </a>
     </div>
     )

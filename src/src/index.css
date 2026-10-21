@@ -1,0 +1,218 @@
+/* =========================================================
+   index.css — design tokens, reset and shared primitives.
+   Light theme is the default; dark applies when the user picks
+   it (data-theme="dark") or when the OS prefers dark and the
+   user hasn't explicitly chosen light.
+   ========================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces — soft greys, never pure white, to reduce glare */
+  --bg: #e7eaee;
+  --surface: #f3f5f7;
+  --surface-2: #eceff2;
+  --surface-3: #e1e5ea;
+  --border: #d3d9e0;
+  --border-strong: #bfc7d1;
+
+  /* Text */
+  --text: #2a323c;
+  --text-muted: #5d6874;
+  --text-faint: #8a939e;
+
+  /* Accent — muted slate blue */
+  --accent: #4f6d8f;
+  --accent-hover: #44607e;
+  --accent-soft: rgba(79, 109, 143, 0.13);
+  --accent-contrast: #f4f6f9;
+
+  /* Status */
+  --danger: #a35d5d;
+  --danger-soft: rgba(163, 93, 93, 0.11);
+  --success: #5b8f6c;
+
+  /* Messages */
+  --bubble-sent: #4f6d8f;
+  --bubble-sent-text: #f1f4f8;
+  --bubble-received: #f6f7f9;
+  --bubble-received-text: #2a323c;
+
+  /* Editor */
+  --editor-bg: #f1f3f5;
+  --editor-gutter: #dfe3e8;
+
+  /* Shape & depth */
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 7px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(30, 40, 55, 0.06);
+  --shadow-md: 0 4px 16px rgba(30, 40, 55, 0.08);
+  --focus-ring: 0 0 0 3px rgba(79, 109, 143, 0.28);
+
+  /* Type */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+
+  --transition: 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #16191e;
+    --surface: #1e2228;
+    --surface-2: #242930;
+    --surface-3: #2c323a;
+    --border: #313741;
+    --border-strong: #404855;
+    --text: #d5d9de;
+    --text-muted: #969fa9;
+    --text-faint: #69727d;
+    --accent: #7c9abd;
+    --accent-hover: #8fabca;
+    --accent-soft: rgba(124, 154, 189, 0.15);
+    --accent-contrast: #14181d;
+    --danger: #c98585;
+    --danger-soft: rgba(201, 133, 133, 0.12);
+    --success: #7fb08e;
+    --bubble-sent: #3b5270;
+    --bubble-sent-text: #e4e9ef;
+    --bubble-received: #262b33;
+    --bubble-received-text: #d5d9de;
+    --editor-bg: #1a1e23;
+    --editor-gutter: #2a3038;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.3);
+    --focus-ring: 0 0 0 3px rgba(124, 154, 189, 0.3);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #16191e;
+  --surface: #1e2228;
+  --surface-2: #242930;
+  --surface-3: #2c323a;
+  --border: #313741;
+  --border-strong: #404855;
+  --text: #d5d9de;
+  --text-muted: #969fa9;
+  --text-faint: #69727d;
+  --accent: #7c9abd;
+  --accent-hover: #8fabca;
+  --accent-soft: rgba(124, 154, 189, 0.15);
+  --accent-contrast: #14181d;
+  --danger: #c98585;
+  --danger-soft: rgba(201, 133, 133, 0.12);
+  --success: #7fb08e;
+  --bubble-sent: #3b5270;
+  --bubble-sent-text: #e4e9ef;
+  --bubble-received: #262b33;
+  --bubble-received-text: #d5d9de;
+  --editor-bg: #1a1e23;
+  --editor-gutter: #2a3038;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 18px rgba(0, 0, 0, 0.3);
+  --focus-ring: 0 0 0 3px rgba(124, 154, 189, 0.3);
+}
+
+/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* ---------- Scrollbars ---------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* ---------- Shared animations ---------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

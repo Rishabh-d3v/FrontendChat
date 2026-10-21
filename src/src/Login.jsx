@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
+import './Login.css'
 // import {jwtDecode} from "jwt-decode"
 
 const BASE_URL = `${window.location.protocol}//${window.location.hostname}:8080`
@@ -63,108 +65,63 @@ export default function Login() {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f0f2f5'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        padding: '40px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-      }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>
+    <div className="auth-screen">
+      <ThemeToggle className="theme-toggle-floating" />
+      <div className="auth-card">
+        <h2 className="auth-title">
           {isRegistering ? 'Register' : 'Login'}
         </h2>
         
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-field">
+            <label htmlFor="auth-username" className="auth-label">
               Username
             </label>
             <input
+              id="auth-username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
+              className="auth-input"
               placeholder="Enter username"
             />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
+          <div className="auth-field">
+            <label htmlFor="auth-password" className="auth-label">
               Password
             </label>
             <input
+              id="auth-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
+              className="auth-input"
               placeholder="Enter password"
             />
           </div>
 
           {error && (
-            <div style={{
-              padding: '10px',
-              marginBottom: '20px',
-              backgroundColor: '#fee',
-              color: '#c00',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}>
+            <div className="auth-error">
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#0084ff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '16px',
-              fontWeight: '500',
-              cursor: 'pointer'
-            }}
+            className="auth-submit"
           >
             {isRegistering ? 'Register' : 'Login'}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div className="auth-switch">
           <button
             onClick={() => {
               setIsRegistering(!isRegistering)
               setError("")
             }}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#0084ff',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
+            className="auth-switch-btn"
           >
             {isRegistering ? 'Already have an account? Login' : 'Need an account? Register'}
           </button>
