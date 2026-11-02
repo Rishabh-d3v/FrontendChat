@@ -1,5 +1,6 @@
 import { FileText, MessageCircle, UserCircle, Users } from "lucide-react";
 import "./TabNavigation.css";
+import Yditor from "./Yditor";
 
 export default function TabNavigation({
     setActiveTab,activeTab
@@ -45,6 +46,15 @@ export default function TabNavigation({
               <div className="tab-content">
                 <FileText />
                 Collab & Chat
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('collab2')}
+              className={`tab-button ${activeTab === 'collab2' ? 'active' : ''}`}
+            >
+              <div className="tab-content">
+                <FileText />
+                Yditor-collab
               </div>
             </button>
           </div>

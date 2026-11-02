@@ -10,6 +10,7 @@ import TabNavigation from './TabNavigation';
 import FriendsList from './FriendsList';
 import Collab from './Collab';
 import findDiff from './FindDiff';
+import Yditor from './Yditor';
 
 export default function ChatApp() {
   const [username, setUsername] = useState('');
@@ -85,10 +86,10 @@ export default function ChatApp() {
       setUsername(savedUsername);
     }
 
-    const socket = new SockJS(`${window.location.protocol}//${window.location.hostname}:8080/ws`);
+    // const socket = new SockJS(`${window.location.protocol}//${window.location.hostname}:8080/ws`);
     //step 1
     const client = new Client({
-      webSocketFactory: () => socket,
+      webSocketFactory: () => new SockJS(`${window.location.protocol}//${window.location.hostname}:8080/ws`),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -485,6 +486,10 @@ export default function ChatApp() {
           sendCaret={sendCaret}
           sendlocal={sendlocal}
           remoteOps={remoteOps}
+        />
+      case 'collab2':
+        return<Yditor
+        stompClient={stompClient}
         />
     }
   }
