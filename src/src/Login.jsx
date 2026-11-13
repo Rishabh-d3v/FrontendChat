@@ -40,17 +40,17 @@ export default function Login() {
         sessionStorage.setItem('jwt', token)  // Changed 'token' to 'jwt'
 
         // Extract username from JWT
-        console.log("Received token:", token)
+        // console.log("Received token:", token)
         const tokenPayload = JSON.parse(atob(token.split('.')[1]))
         // const token2=jwtDecode(token)
         // console.log(token2)
-        console.log(tokenPayload);
+        // // console.log(tokenPayload);
         const extractedUsername = tokenPayload.username || tokenPayload.sub
 
        // SAVE USERNAME TO LOCALSTORAGE
        sessionStorage.setItem('username', extractedUsername)
 
-       console.log("Logged in as:", extractedUsername)
+       // // console.log("Logged in as:", extractedUsername)
 
        // Navigate to chat
        navigate('/chat', { state: { username: extractedUsername } })
@@ -59,7 +59,7 @@ export default function Login() {
         setError(errorText || `${isRegistering ? 'Registration' : 'Login'} failed`)
       }
     } catch (err) {
-      console.error(err)
+      // // console.error(err)
       setError("Connection error. Please try again.")
     }
   }

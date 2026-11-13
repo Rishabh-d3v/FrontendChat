@@ -49,12 +49,12 @@ export default function TabNavigation({
               </div>
             </button>
             <button
-              onClick={() => setActiveTab('collab2')}
-              className={`tab-button ${activeTab === 'collab2' ? 'active' : ''}`}
+              onClick={() => setActiveTab('collab3')}
+              className={`tab-button ${activeTab === 'collab3' ? 'active' : ''}`}
             >
               <div className="tab-content">
                 <FileText />
-                Yditor-collab
+                Raw CRDT
               </div>
             </button>
           </div>

@@ -11,6 +11,7 @@ import FriendsList from './FriendsList';
 import Collab from './Collab';
 import findDiff from './FindDiff';
 import Yditor from './Yditor';
+import CrdtEditor from './CrdtEditor';
 
 export default function ChatApp() {
   const [username, setUsername] = useState('');
@@ -192,7 +193,7 @@ export default function ChatApp() {
       GroupSubRef.current=stompClient.subscribe(`/topic/group/${joinedRoom}`, (message) => {
         const received = JSON.parse(message.body);
         if(received.type==='PROJECT' || received.type==='PASS'){
-          console.log('checking document data 55', received);
+          // console.log('checking document data 55', received);
           if(received.username!==username){
             const p=received.payload;
             const splice=(text)=>text.slice(0,p.start)+p.newText+text.slice(p.start+p.delete_count)
@@ -224,8 +225,8 @@ export default function ChatApp() {
         }]);
       }  
       else{
-        console.log('checking if i can receive caret position ', received);
-        console.log("onlineUsers == ", received);
+        // console.log('checking if i can receive caret position ', received);
+        // console.log("onlineUsers == ", received);
         return setOnlineUsers(received);
           // }
       }
@@ -233,9 +234,9 @@ export default function ChatApp() {
       // console.log('Joined room:', roomId);
     }
     return ()=>{
-      console.log("leaving room bye bye!")
+      // console.log("leaving room bye bye!")
       leaveRoom()
-      console.log("leaving room bye bye 2!")
+      // console.log("leaving room bye bye 2!")
     };
     }, [joinedRoom, stompClient?.connected]);
 
@@ -259,7 +260,7 @@ export default function ChatApp() {
       alert("error in unsubscribing ",err)
     }
   }
-    console.log('leaved room:', joinedRoom);
+    // console.log('leaved room:', joinedRoom);
     setJoinedRoom('');
     setGroupMessages([]);
     setRoomId('');
@@ -381,7 +382,7 @@ export default function ChatApp() {
         },
       };
     }
-    console.log("sending group message======> ",messageObj)
+    //  console.log("sending group message======> ",messageObj)
       // console.log('Sending group message:', messageObj);
           stompClient.publish({
         destination: `/chat/message/${joinedRoom}`,
@@ -487,8 +488,8 @@ export default function ChatApp() {
           sendlocal={sendlocal}
           remoteOps={remoteOps}
         />
-      case 'collab2':
-        return<Yditor
+      case 'collab3':
+        return<CrdtEditor
         stompClient={stompClient}
         />
     }

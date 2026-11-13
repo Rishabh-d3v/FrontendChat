@@ -48,7 +48,9 @@ function useYjsStomp(ydoc, stompClient, docId) {
         Y.applyUpdate(ydoc, new Uint8Array(msg.data), REMOTE) 
       }
       if (msg.type === 'sync-request') {
-        console.log('step 7: sending full document to newcomer ',ydoc)
+        console.log('step 7.1: full document sent to newcomer ', Y.decodeUpdate(Y.encodeStateAsUpdate(ydoc)))
+        console.log('step 7.2: full document sent to newcomer ', Y.encodeStateAsUpdate(ydoc))
+        console.log('step 7.3: full document sent to newcomer ', ydoc)
         send('update', Y.encodeStateAsUpdate(ydoc))
       }
     })

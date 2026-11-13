@@ -46,29 +46,29 @@ export default function Collab({roomId,username,
         })
     })
     setremoteCaret(newCaret)    
-    console.log("onlineUsers == ", onlineUsers)
+    // console.log("onlineUsers == ", onlineUsers)
     },[onlineUsers])
     useLayoutEffect(() => {
-        console.log("remoteOps.current starting == ",remoteOps.current)
+        // // console.log("remoteOps.current starting == ",remoteOps.current)
         const ops = remoteOps.current.splice(0); 
         for (const op of ops) {
         caretPos1.current = shiftCaret(caretPos1.current, op);
         caretPos2.current = shiftCaret(caretPos2.current, op);
      }
-        console.log("caretPos1.current == ",caretPos1.current)
-        console.log("caretPos2.current == ",caretPos2.current)
+        // console.log("caretPos1.current == ",caretPos1.current)
+        // // console.log("caretPos2.current == ",caretPos2.current)
         textarearef.current?.setSelectionRange(caretPos1.current, caretPos2.current);
     }, [docs?.content]);
     const shiftCaret = (currentPos, remoteOp) => {
         if (currentPos <= remoteOp.start) {
-            console.log("currentPos <= remoteOp.start == ",currentPos,remoteOp.start)
+            // console.log("currentPos <= remoteOp.start == ",currentPos,remoteOp.start)
             return currentPos;
         }                                        
         if (currentPos >= remoteOp.start + remoteOp.delete_count) {
-            console.log("currentPos >= remoteOp.start + remoteOp.delete_count == ",currentPos,remoteOp.start,remoteOp.delete_count)
+            // // console.log("currentPos >= remoteOp.start + remoteOp.delete_count == ",currentPos,remoteOp.start,remoteOp.delete_count)
             return currentPos + remoteOp.newText.length - remoteOp.delete_count;
         }
-        console.log("returning remoteOp.start + remoteOp.newText.length == ",remoteOp.start,remoteOp.newText.length)    
+        // // console.log("returning remoteOp.start + remoteOp.newText.length == ",remoteOp.start,remoteOp.newText.length)
         return remoteOp.start + remoteOp.newText.length;                                
     };
     const handleProject = (e) => {
